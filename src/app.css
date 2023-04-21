@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light mode styles */
+body {
+  @apply bg-white text-gray-900;
+}
+
+/* Dark mode styles */
+body.dark {
+  @apply bg-gray-900 text-white;
+}
+
+/* Additional dark mode styles */
+.dark .text-primary {
+  @apply text-yellow-500;
+}
+
+.dark .bg-primary {
+  @apply bg-yellow-500;
+}
+
+.dark .text-secondary {
+  @apply text-blue-500;
+}
+
+.dark .bg-secondary {
+  @apply bg-blue-500;
+}
+
+
+
+
+
