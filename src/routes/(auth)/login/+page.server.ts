@@ -39,14 +39,15 @@ export const load = (async (event) => {
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-    login: async ({ request, cookies, url }) => {
+    login: async (event) => {
+        const { request } = event;
         const form = await superValidate(request, loginSchema, {
             id: 'loginForm'
         });
 
         if (!form.valid) return fail(400, { loginForm: form });
 
-        const auth = new Auth({cookies});
+        const auth = new Auth(event);
         const { email, password } = form.data;
         const response = await auth.loginUser(email, password);
 
@@ -55,18 +56,22 @@ export const actions: Actions = {
             return fail(response.error.code, { loginForm: form });
         }
         
-        if (form.data.ref) throw redirect(302, `/${atob(form.data.ref).slice(1)}`);
+        if (form.data.ref) {
+            const ref = Buffer.from(form.data.ref, 'base64').toString();
+            throw redirect(302, `/${ref.slice(1)}`);
+        }
         throw redirect(302, '/');
     },
 
-    register: async ({ request, cookies, url }) => {
+    register: async (event) => {
+        const { request } = event;
         const form = await superValidate(request, registerSchema, {
             id: 'registerForm'
         });
        
         if (!form.valid) return fail(400, { registerForm: form });
 
-        const auth = new Auth({cookies});
+        const auth = new Auth(event);
         const { name, email, password } = form.data;
         const response = await auth.registerUser(name, email, password);
         
@@ -76,7 +81,10 @@ export const actions: Actions = {
             return fail(response.error.code, { registerForm: form });
         }
 
-        if (form.data.ref) throw redirect(302, `/${atob(form.data.ref).slice(1)}`);
+        if (form.data.ref) {
+            const ref = Buffer.from(form.data.ref, 'base64').toString();
+            throw redirect(302, `/${ref.slice(1)}`);
+        }
         throw redirect(302, '/');
     }
 };

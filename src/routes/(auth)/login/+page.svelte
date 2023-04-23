@@ -3,6 +3,8 @@
     import { superForm } from 'sveltekit-superforms/client';
     import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
     import type { PageData } from './$types';
+	import { PUBLIC_MODE } from '$env/static/public';
+	import FormDebug from '$lib/componentes/FormDebug.svelte';
 
     export let data: PageData;
 
@@ -31,7 +33,7 @@
 
 </script>
 
-<SuperDebug data={form}/>
+<FormDebug data={$form}/>
 
 <div class="flex items-center justify-center mt-20">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-md shadow-md w-full max-w-md">

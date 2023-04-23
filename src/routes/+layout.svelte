@@ -1,6 +1,7 @@
 <script>
+    import AccountMenu from "$lib/componentes/AccountMenu.svelte";
     import "../app.css";
-    import User from 'svelte-icons/fa/FaUser.svelte'
+    
 </script>
 
 <header class="bg-primary text-white">
@@ -18,11 +19,12 @@
         
       
         <div class="hidden md:flex space-x-4">
-            <a href="/" class="text-white">Home</a>
+            <!-- <a href="/" class="text-white">Home</a>
             <a href="/" class="text-white">Products</a>
             <a href="/" class="text-white">About</a>
-            <a href="/" class="text-white">Contact</a>
-            <a href="/account" class="text-white w-5"><User/></a>
+            <a href="/" class="text-white">Contact</a> -->
+            <AccountMenu />
+            <!-- <a href="/account" class="text-white w-5"><User/></a> -->
         </div>
         
     </nav>

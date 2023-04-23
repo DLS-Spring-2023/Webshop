@@ -9,23 +9,27 @@ class Fetch {
         this.cookies = cookies;
     }
 
-    private setHeaders = (authTokens?: AuthTokens) => {
+    private getHeaders = () => {
         const headers: { [key: string]: string } = {
             'Content-Type': 'application/json',
         };
         
-        if (authTokens) {
-            if (authTokens.access_token) authTokens.access_token = 'Bearer ' + authTokens.access_token;
-            if (authTokens.refresh_token) authTokens.refresh_token = 'Session ' + authTokens.refresh_token;
+        if (this.cookies) {
+            const authTokens: AuthTokens = {};
+            const accessToken = this.cookies.get('access_token');
+            const refreshToken = this.cookies.get('refresh_token');
+
+            if (accessToken) authTokens.access_token = 'Bearer ' + accessToken;
+            if (refreshToken) authTokens.refresh_token = 'Session ' + refreshToken;
     
             const authHeader = [authTokens.access_token, authTokens.refresh_token].filter(t => t !== undefined).join(', ');
             headers['Authorization'] = authHeader;
         }
-    
+        
         return headers;
     }
     
-    private async call (path: string, options?: RequestInit): Promise<Response> {
+    private async call(path: string, options?: RequestInit): Promise<Response> {
         try {
             const response = await fetch(AUTH_URL + '/v1' + path, options);
             
@@ -40,7 +44,10 @@ class Fetch {
             }
     
             let data: Response = { auth: this.getAuth(response) };
-            try { data.data = await response.json() } catch (_) {}
+            try { 
+                const json = await response.json() 
+                data.data = json.data ? json.data : json;
+            } catch (_) {}
             return data
             
         } catch (error) {
@@ -96,18 +103,17 @@ class Fetch {
     }
 
     
-    
-    async GET(path: string, options?: FetchOptions) {
+    async GET(path: string) {
         return await this.call(path, {
             method: 'GET',
-            headers: this.setHeaders(options?.authTokens)
+            headers: this.getHeaders()
         });
     }
     
     async POST(path: string, options?: FetchOptions) {
         return await this.call(path, {
             method: 'POST',
-            headers: this.setHeaders(options?.authTokens),
+            headers: this.getHeaders(),
             body: options?.body ? JSON.stringify(options?.body) : null
         });
     }
@@ -115,7 +121,7 @@ class Fetch {
     async PUT(path: string, options?: FetchOptions) {
         return await this.call(path, {
             method: 'PUT',
-            headers: this.setHeaders(options?.authTokens),
+            headers: this.getHeaders(),
             body: options?.body ? JSON.stringify(options?.body) : null
         });
     }
@@ -123,7 +129,7 @@ class Fetch {
     async DELETE(path: string, options?: FetchOptions) {
         return await this.call(path, {
             method: 'DELETE',
-            headers: this.setHeaders(options?.authTokens),
+            headers: this.getHeaders(),
             body: options?.body ? JSON.stringify(options?.body) : null
         });
     }

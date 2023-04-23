@@ -4,7 +4,6 @@ export type AuthTokens = {
 }
 
 export type FetchOptions = {
-    authTokens?: AuthTokens
     body?: object
 }
 
@@ -14,7 +13,7 @@ type Error = {
 }
 
 export type Response = {
-    data?: object,
+    data?: any,
     auth?: AuthTokens,
     error?: Error
 }
