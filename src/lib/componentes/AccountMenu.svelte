@@ -33,22 +33,24 @@
             {#if $page.data?.authenticated}
                 <a
                     href="/account"
+                    on:click={() => (menuOpen = false)}
                     class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary dark:hover:bg-yellow-500 hover:text-white"
                 >
                     Profile
                 </a>
                 <a
                     href="/account/orders"
+                    on:click={() => (menuOpen = false)}
                     class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary dark:hover:bg-yellow-500 hover:text-white"
                 >
                     Orders
                 </a>
-                <a
+                <!-- <a
                     href="/account/settings"
                     class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary dark:hover:bg-yellow-500 hover:text-white"
                 >
                     Settings
-                </a>
+                </a> -->
                 <hr class="border-gray-200 dark:border-gray-700 my-1">
                 <form method="post" action="/logout">
                     <button
