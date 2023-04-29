@@ -10,3 +10,19 @@ export type Product = {
     stock: number;
     thumbnail: string;
 }
+
+export type CartItem = {
+    id: number;
+    title: string;
+    price: number;
+    quantity: number;
+    thumbnail: string;
+};
+
+export type Account = {
+    id: string;
+    email: string;
+    name: string;
+    address: string;
+    phone: string;
+}

@@ -122,7 +122,7 @@ class Fetch {
         return await this.call(path, {
             method: 'PUT',
             headers: this.getHeaders(),
-            body: options?.body ? JSON.stringify(options?.body) : null
+            body: options?.body ? JSON.stringify(options.body) : null
         });
     }
     

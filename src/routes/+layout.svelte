@@ -1,20 +1,14 @@
 <script>
     import Shipping from 'svelte-icons/md/MdLocalShipping.svelte'
     import MoneyOff from 'svelte-icons/md/MdMoneyOff.svelte'
-    import Cart from 'svelte-icons/fa/FaShoppingCart.svelte'
     import Star from 'svelte-icons/fa/FaRegStar.svelte'
     import Home from 'svelte-icons/md/MdHome.svelte'
 
     import AccountMenu from "$lib/componentes/AccountMenu.svelte";
 	import ThemeSwitch from "$lib/componentes/ThemeSwitch.svelte";
+	import '$lib/stores/CartStore';
     import "../app.css";
-	import { onMount } from 'svelte';
-
-    onMount(() => {
-        if (!sessionStorage.getItem('cart')) {
-            sessionStorage.setItem('cart', JSON.stringify([]));
-        }
-    });
+	import NavCart from '$lib/componentes/NavCart.svelte';
 
     let categories = [{
         id: 1,
@@ -64,19 +58,14 @@
         
       
         <div class="hidden md:flex space-x-4">
-            <!-- <a href="/" class="text-white">Home</a>
-            <a href="/" class="text-white">Products</a>
-            <a href="/" class="text-white">About</a>
-            <a href="/" class="text-white">Contact</a> -->
             <ThemeSwitch/>
             <AccountMenu />
-            <a href="/cart" class="text-white w-7"><Cart/></a>
-            <!-- <a href="/account" class="text-white w-5"><User/></a> -->
+            <NavCart />
         </div>
         
     </nav>
 
-    <div class="w-full m-0 px-4 py-2 flex items-center justify-between space-x-4 overflow-x-auto bg-secondary">
+    <div class="px-4 py-2 flex items-center justify-between space-x-4 overflow-x-auto bg-highlight">
         <a
                 href="/"
                 class="text-gray-700 w-6 dark:text-gray-300 font-semibold hover:text-primary dark:hover:text-yellow-500"
@@ -93,14 +82,14 @@
         {/each}
     </div>
     
-    <div class="w-full mx-auto px-4 py-2 flex items-center justify-evenly space-x-3 bg-primary">
+    <div class="w-full mx-auto px-4 py-2 flex items-center justify-evenly space-x-3 bg-primary shadow-md">
         <div class="flex">
             <div class="h-6 mr-2"><MoneyOff/></div>
-            <p>FREE SHIPPING</p>
+            <p>FREE SHIPPING ON ORDERS OVER $999</p>
         </div>
         <div class="flex">
             <div class="h-6 mr-2"><Star/></div>
-            <p>MORE THAN 8 MILLION REVIEWS</p>
+            <p>MORE THAN 8 MILLION 5-STAR REVIEWS</p>
         </div>
         <div class="flex">
             <div class="h-6 mr-2"><Shipping/></div>

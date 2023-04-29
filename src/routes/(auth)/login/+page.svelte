@@ -1,9 +1,7 @@
 <script lang="ts">
     import { page } from '$app/stores';
     import { superForm } from 'sveltekit-superforms/client';
-    import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
     import type { PageData } from './$types';
-	import { PUBLIC_MODE } from '$env/static/public';
 	import FormDebug from '$lib/componentes/FormDebug.svelte';
 
     export let data: PageData;
@@ -33,10 +31,16 @@
 
 </script>
 
+<style lang="postcss">
+    input {
+        @apply block w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-600 dark:text-white focus:outline-none focus:ring-2;
+    }
+</style>
+
 <FormDebug data={$form}/>
 
 <div class="flex items-center justify-center mt-20">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-md shadow-md w-full max-w-md">
+    <div class="bg-highlight p-8 rounded-md shadow-md w-full max-w-md">
         <h2 class="text-2xl font-semibold mb-6 text-center text-primary dark:text-yellow-500">{isLogin ? 'Login' : 'Register'}</h2>
         {#if $message}
             <div class="text-red-500 text-sm mb-4">
@@ -50,7 +54,7 @@
                     <input 
                         bind:value={$registerForm.name}
                         type="name" id="name" name="name" 
-                        class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-secondary" required
+                        required
                     >
                 </div>
                 {#if $registerErrors.name}
@@ -64,7 +68,7 @@
                 <input 
                     bind:value={$form.email}
                     type="email" id="email" name="email" 
-                    class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-secondary" required
+                    required
                 >
             </div>
             {#if $errors.email}
@@ -77,7 +81,7 @@
                 <input 
                     bind:value={$form.password}
                     type="password" id="password" name="password" 
-                    class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-secondary" required
+                    required
                 >
                 {#if $errors.password}
                     <div class="text-red-500 text-sm mb-4">
@@ -88,7 +92,7 @@
             {#if !isLogin}
                 <div>
                     <label for="repassword" class="block text-gray-700 dark:text-gray-300 mb-2">Repeat Password</label>
-                    <input type="password" id="repassword" name="repassword" class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-secondary" required>
+                    <input type="password" id="repassword" name="repassword" required>
                 </div>
                 {#if $registerErrors.repassword}
                     <div class="text-red-500 text-sm mb-4">

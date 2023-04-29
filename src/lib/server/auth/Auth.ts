@@ -1,5 +1,5 @@
 import Jwt from 'jsonwebtoken'
-import type { LoginResponse } from "./interface";
+import type { LoginResponse, User } from "./interface";
 import { redirect, type Cookies, type RequestEvent } from "@sveltejs/kit";
 import { AUTH_API_KEY, AUTH_PROJECT_ID } from "$env/static/private";
 import Fetch from "./fetch";
@@ -89,10 +89,21 @@ class Auth {
         await this.fetch.GET(`/user?API_KEY=${AUTH_API_KEY}`);
     }
 
+    async getUser(): Promise<User> {
+        const response = await this.fetch.GET(`/user?API_KEY=${AUTH_API_KEY}`);
+        return response.data;
+    }
+
     async logoutUser(): Promise<void> {
         await this.fetch.POST(`/user/logout?API_KEY=${AUTH_API_KEY}`);
         this.event.cookies.delete('access_token');
         this.event.cookies.delete('refresh_token');
+    }
+
+    async updateUser({name, email} : { name: string, email: string }) {
+        return await this.fetch.PUT(`/user?API_KEY=${AUTH_API_KEY}`, {
+            body: { name, email }
+        });
     }
     
 }

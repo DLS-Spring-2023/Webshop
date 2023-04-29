@@ -27,11 +27,11 @@ const registerSchema = z.object({
 });
 
 export const load = (async (event) => {
-    const loginForm = await superValidate(loginSchema, {
+    const loginForm = superValidate(loginSchema, {
         id: 'loginForm'
       });
     
-      const registerForm = await superValidate(registerSchema, {
+      const registerForm = superValidate(registerSchema, {
         id: 'registerForm'
       });
     
@@ -60,6 +60,7 @@ export const actions: Actions = {
             const ref = Buffer.from(form.data.ref, 'base64').toString();
             throw redirect(302, `/${ref.slice(1)}`);
         }
+        
         throw redirect(302, '/');
     },
 

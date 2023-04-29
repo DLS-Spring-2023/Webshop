@@ -2,24 +2,22 @@
     import Cart from 'svelte-icons/fa/FaShoppingCart.svelte';
     import Check from 'svelte-icons/fa/FaCheck.svelte'
 	import type { Product } from "$lib/types/types";
-	import { addToCart, existsInCart } from '$lib/cart/cart';
-	import { browser } from '$app/environment';
+	import CartStore from '$lib/stores/CartStore';
 
     export let product: Product;
     
     const desc = product.description.length > 50 ? product.description.slice(0, 50) + '...' : product.description;
     const title = product.title.length > 30 ? product.title.slice(0, 30) + '...' : product.title;
 
-    $: isInCart = browser && existsInCart(product.id);
+    $: cart = CartStore.cart;
     let loading = false;
 
     const add = () => {
         loading = true;
-        addToCart(product.id);
-        isInCart = true;
         setTimeout(() => {
-            loading = false;
-        }, 1000);
+            CartStore.addToCart(product);
+            loading = false
+        }, 700);
     }
 </script>
 
@@ -29,7 +27,7 @@
 
 <div class="relative">
     <a href={`/products/${product.id}`}>
-        <div class="w-56 h-96 bg-white dark:bg-slate-700 shadow-md rounded-md p-4 flex flex-col">
+        <div class="w-56 h-96 bg-highlight shadow-md rounded-md p-4 flex flex-col">
             <div>
                 <img src="{product.thumbnail}" alt="{title}" class="w-full h-40 object-cover mb-4 rounded-md" />
             </div>
@@ -47,7 +45,7 @@
             <div class="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary"></div>
         </div>
     {:else}
-        {#if isInCart}
+        {#if $cart.find(item => item.id === product.id) !== undefined}
             <div class="absolute bottom-2 right-2 rounded-lg w-10 h-10 p-2 text-green-600 bg-slate-200 dark:bg-slate-600">
                 <Check />
             </div>

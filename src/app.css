@@ -29,6 +29,22 @@ body.dark {
   @apply bg-blue-500;
 }
 
+.dark .bg-highlight {
+  @apply bg-slate-700;
+}
+
+.dark .border-primary {
+  @apply border-yellow-500;
+}
+
+.dark .border-secondary {
+  @apply border-blue-500;
+}
+
+.dark .border-highlight {
+  @apply border-slate-700;
+}
+
 
 
 

@@ -10,10 +10,17 @@ export default {
       backgroundColor: {
         'primary': '#FF6B6B',
         'secondary': '#4ECDC4',
+        'highlight': '#FFF',
       },
       textColor: {
         'primary': '#FF6B6B',
         'secondary': '#4ECDC4',
+        'highlight': '#FFF',
+      },
+      borderColor: {
+        'primary': '#FF6B6B',
+        'secondary': '#4ECDC4',
+        'highlight': '#FFF',
       },
     },
   },
