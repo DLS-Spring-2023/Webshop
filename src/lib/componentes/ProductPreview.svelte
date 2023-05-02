@@ -26,7 +26,7 @@
 </svelte:head>
 
 <div class="relative">
-    <a href={`/products/${product.id}`}>
+    <a href={`/products/${product.eid}`}>
         <div class="w-56 h-96 bg-highlight shadow-md rounded-md p-4 flex flex-col">
             <div>
                 <img src="{product.thumbnail}" alt="{title}" class="w-full h-40 object-cover mb-4 rounded-md" />

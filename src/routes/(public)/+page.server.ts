@@ -1,4 +1,5 @@
-import { redis } from "$lib/server/redis/Redis";
+import { elastic, getHomePageResults } from "$lib/server/sdk/Elastic";
+import { redis } from "$lib/server/sdk/Redis";
 import type { Product } from "$lib/types/types";
 import type { Actions, PageServerLoad } from "./$types";
 
@@ -13,28 +14,19 @@ export const load: PageServerLoad = async ({ fetch, setHeaders }) => {
             return JSON.parse(chached);
         }
 
+        const data = await getHomePageResults();
+
         const sections: Section[] = [
-            {title: "Popular Items", products: []}, 
-            {title: "New Arrivals", products: []}, 
-            {title: "Best Sellers", products: []}, 
-            {title: "Special Offers", products: []}, 
-            {title: "On Sale", products: []}
+            {title: "Popular Items", products: data.slice(0, 10)}, 
+            {title: "New Arrivals", products: data.slice(10, 20)}, 
+            {title: "Best Sellers", products: data.slice(20, 30)},
+            {title: "Special Offers", products: data.slice(30, 40)}, 
+            {title: "On Sale", products: data.slice(40, 50)},
         ];
-        
-        const promises: Promise<any>[] = [];
-        for (const [i] of sections.entries()) {
-            promises.push(fetch(`https://dummyjson.com/products?limit=10&skip=${i*10}`));
-        }
-    
-        const responses = await Promise.all(promises);
-        for (const [i, response] of responses.entries()) {
-            const products = await response.json();
-            sections[i].products = products.products;
-        }
 
         redis.set("aG9tZV9wYWdl", JSON.stringify(sections), "EX", 600); // 10 minutes
-        
         setHeaders({ "cache-control": "public, max-age=600" });
+        
         return sections;
     }
 
@@ -47,7 +39,6 @@ export const load: PageServerLoad = async ({ fetch, setHeaders }) => {
 export const actions: Actions = {
     setTheme: ({url, cookies}) => {
         const theme = url.searchParams.get("theme");
-        console.log(theme);
         
         if (theme) {
             cookies.set("theme", theme, {
@@ -58,4 +49,40 @@ export const actions: Actions = {
             });
         }
     },
+
+    search: async ({request, fetch, setHeaders}) => {
+        const form = await request.formData();
+        const q = form.get("q");
+
+        if (!q || typeof q !== 'string') return [];
+
+        const chached = await redis.get(q);
+        if (chached) {
+            const ttl = await redis.ttl(q);
+            setHeaders({ "cache-control": `max-age=${ttl}` });
+            return JSON.parse(chached);
+        }
+
+        const result = await elastic.search({
+            index: 'products',
+            query: {
+                multi_match: {
+                    query: q + "*",
+                    fields: ["title", "brand", "category", "description"],
+                    fuzziness: "1",
+                }
+            }
+        });
+
+        console.log(result);
+        
+
+        
+        const data = result.hits.hits.map((hit) => ({ ...hit._source as Product, eid: hit._id }));
+
+        redis.set(q, JSON.stringify(data), "EX", 600); // 10 minutes
+        setHeaders({ "cache-control": "public, max-age=600" });
+
+        return data as Product[];
+    }
 };

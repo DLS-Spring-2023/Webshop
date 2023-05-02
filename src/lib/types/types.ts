@@ -1,4 +1,5 @@
 export type Product = {
+    eid: string;
     id: number;
     title: string;
     brand: string;

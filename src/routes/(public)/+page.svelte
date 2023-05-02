@@ -5,7 +5,6 @@
     export let data: PageData;
 
     const { sections } = data;
-    const images = sections.flatMap(section => section.products.flatMap(product => product.images));
 </script>
 
 <div class="p-0 mb-20 text-white">

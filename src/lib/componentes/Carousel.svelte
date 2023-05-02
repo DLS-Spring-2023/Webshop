@@ -29,7 +29,7 @@
         bind:this={carousel}
     >
         <div class="flex space-x-4 px-4">
-            {#each products as product (product.id)}
+            {#each products as product (product.eid)}
                 <ProductPreview product={product} />
                 {/each}
                 <div class="w-4 text-transparent">.</div>
