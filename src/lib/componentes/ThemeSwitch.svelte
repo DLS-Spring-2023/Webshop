@@ -1,44 +1,41 @@
 <script lang="ts">
+    import { page } from '$app/stores';
+    import { enhance, type SubmitFunction } from '$app/forms';
 	import { onMount } from "svelte";
     import Sun from 'svelte-icons/fa/FaSun.svelte'
     import Moon from 'svelte-icons/fa/FaMoon.svelte'
 
-    let theme = 'light';
+    let theme: string = $page.data.theme;
 
     onMount(() => {
-        if (!('theme' in localStorage) ) {
-            localStorage.theme = window.matchMedia('(prefers-color-scheme: dark)').matches 
-                ? 'dark' 
-                : 'light';
-        }
-
-        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-        if (localStorage.theme === 'dark') {
-            document.documentElement.classList.add('dark')
-            theme = 'dark';
-        } else {
-            document.documentElement.classList.remove('dark')
-            theme = 'light';
-        } 
+        theme = document.documentElement.classList.contains('dark')
+            ? 'dark'
+            : 'light';
     });
 
-    const toggleTheme = () => {
-        if (theme === 'light') {
-            document.documentElement.classList.add('dark')
-            theme = 'dark';
-            localStorage.theme = 'dark'
-        } else {
-            document.documentElement.classList.remove('dark')
-            theme = 'light';
-            localStorage.theme = 'light'
+    const submitTheme: SubmitFunction = ({action}) => {
+        const newTheme = action.searchParams.get('theme');
+
+        if (newTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else if (newTheme === 'light') {
+            document.documentElement.classList.remove('dark');
         }
+
+        if (newTheme) theme = newTheme;
     }
 </script>
 
-<button type="button" class="w-6" on:click={toggleTheme}>
-    {#if theme === 'dark'}
-        <Sun/>
-    {:else}
-        <Moon/>
-    {/if}
-</button>
+<form method="post" use:enhance={submitTheme}>
+    <button 
+        type="submit" 
+        formaction={`/?/setTheme&theme=${theme === 'dark' ? 'light' : 'dark'}`}
+        class="w-6" 
+    >
+        {#if theme === 'dark'}
+            <Sun/>
+        {:else}
+            <Moon/>
+        {/if}
+    </button>
+</form>
