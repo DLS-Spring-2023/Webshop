@@ -4,7 +4,7 @@
 
     export let images: string[] = [];
     
-    let selectedIndex = 0;
+    $: selectedIndex = images ? 0 : 0;
     let thumbnailContainer: HTMLDivElement;
     let largeImageContainer: HTMLDivElement;
   

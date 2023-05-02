@@ -8,9 +8,19 @@
     let theme: string = $page.data.theme;
 
     onMount(() => {
-        theme = document.documentElement.classList.contains('dark')
-            ? 'dark'
-            : 'light';
+        if (!theme) {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+            
+            theme = prefersDark ? 'dark' : 'light';
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.cookie = 'theme=dark;path=/;max-age=31536000;secure';
+            }
+        } else {
+            theme = document.documentElement.classList.contains('dark')
+                ? 'dark'
+                : 'light';
+        }
     });
 
     const submitTheme: SubmitFunction = ({action}) => {

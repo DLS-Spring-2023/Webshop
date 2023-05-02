@@ -25,7 +25,7 @@
         <div>
             <ImageCarousel images="{data.product.images}" />
         </div>
-        <div class="flex flex-col justify-between rounded-md p-4 bg-white dark:bg-slate-700">
+        <div class="flex flex-col justify-between max-w-2xl rounded-md p-4 bg-white dark:bg-slate-700">
             <div>
                 <h1 class="text-3xl font-semibold text-gray-800 dark:text-gray-100">{data.product.title}</h1>
                 <p class="text-xl text-primary dark:text-yellow-500 font-semibold mt-2 mb-4">${data.product.price}</p>

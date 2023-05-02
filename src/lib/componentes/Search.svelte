@@ -1,6 +1,7 @@
 <script lang="ts">
     import { enhance, type SubmitFunction } from '$app/forms';
 	import type { Product } from '$lib/types/types';
+    import { fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
 
     let form: HTMLFormElement;
@@ -30,6 +31,12 @@
             return;
         }
 
+        if (query === queryTitle) {
+            open = true;
+            cancel();
+            return;
+        }
+
         open = true;
         loading = true;
         queryTitle = query;
@@ -41,14 +48,23 @@
                     loading = false;
                 }, 500);
             }
-
         }
     }
 
     const onFocus = (e: HTMLInputElement) => {
         e.addEventListener('focus', () => {
-            if (input.value.length > 0) {
-                open = true;
+            if (open) return;
+
+            if (input.value.length > 0 && input.value === queryTitle) {
+                setTimeout(() => {
+                    loading = true;
+                    open = true;
+                }, 500)
+
+                setTimeout(() => {
+                    loading = false;
+                }, 1500);
+
             }
         });
 
@@ -73,6 +89,7 @@
             bind:value={query} 
             bind:this={input}
             use:onFocus
+            autocomplete="off"
             type="text" 
             name="q" 
             placeholder="Search" 
@@ -86,7 +103,7 @@
     </form>
 
     {#if open}
-        <div class="popout bg-highlight border-secondary">
+        <div class="popout bg-highlight border-secondary" transition:fly>
             {#if loading}
                 <div class="flex justify-center items-center h-full">
                     <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-secondary"></div>
