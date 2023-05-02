@@ -8,7 +8,7 @@
     let cart = CartStore.cart;
   
     $: itemTotal = $cart.reduce((total, item) => total + item.price * item.quantity, 0);
-    $: shipping = itemTotal > 999 ? 0 : 13.99;
+    $: shipping = itemTotal === 0 ? 0 : itemTotal > 999 ? 0 : 13.99;
     $: total = itemTotal + shipping;
 
     const checkout = () => {
@@ -88,7 +88,8 @@
     </div>
     <div class="flex justify-end">
         <button
-            class="bg-primary dark:bg-yellow-500 hover:bg-opacity-90 text-white py-2 px-4 rounded-md mt-4"
+            class="bg-primary dark:bg-yellow-500 hover:bg-opacity-90 text-white py-2 px-4 rounded-md mt-4 disabled:bg-gray-400 disabled:dark:bg-gray-400"
+            disabled={$cart.length === 0}
             on:click={checkout}
         >
             Checkout
