@@ -5,6 +5,10 @@
     import User from 'svelte-icons/fa/FaUser.svelte';
   
     let menuOpen = false;
+
+    $: authenticated = $page.data?.authenticated;
+
+    $: path = $page.url.pathname;
   
     onMount(() => {
         const handleClickOutside = (e: any) => {
@@ -30,7 +34,7 @@
         <div
             class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-md z-10"
         >
-            {#if $page.data?.authenticated}
+            {#if authenticated}
                 <a
                     href="/account"
                     on:click={() => (menuOpen = false)}
@@ -46,7 +50,7 @@
                     Orders
                 </a>
                 <hr class="border-gray-200 dark:border-gray-700 my-1">
-                <form method="post" action="/logout">
+                <form method="post" action="/logout?path={path}">
                     <button
                         class="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary dark:hover:bg-yellow-500 hover:text-white"
                     >

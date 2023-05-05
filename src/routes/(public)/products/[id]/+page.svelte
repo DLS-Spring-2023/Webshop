@@ -3,6 +3,7 @@
     import ImageCarousel from "$lib/componentes/ImageCarousel.svelte";
     import Check from 'svelte-icons/fa/FaCheck.svelte'
     import CartStore from "$lib/stores/CartStore";
+	import LoadingSpinner from "$lib/componentes/LoadingSpinner.svelte";
 
     $: cart = CartStore.cart;
   
@@ -36,7 +37,10 @@
             </div>
 
             {#if loading}
-                <div class="animate-spin rounded-full ml-6 mb-1 h-8 w-8 border-t-2 border-b-2 border-primary dark:border-yellow-500"></div>
+                <!-- <div class="animate-spin rounded-full ml-6 mb-1 h-8 w-8 border-t-2 border-b-2 border-primary dark:border-yellow-500"></div> -->
+                <div class="ml-4">
+                    <LoadingSpinner size={10} />
+                </div>
                 
             {:else if data.product.stock === 0}
                 <div class="w-fit bg-gray-400 dark:bg-gray-500 text-white py-2 px-4 rounded-md cursor-not-allowed">

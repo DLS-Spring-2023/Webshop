@@ -3,6 +3,7 @@
     import type { PageData } from "./$types";
     import FormDebug from "$lib/componentes/FormDebug.svelte";
 	import { superForm } from "sveltekit-superforms/client";
+	import LoadingSpinner from "$lib/componentes/LoadingSpinner.svelte";
 
     export let data: PageData;
 
@@ -116,7 +117,7 @@
             </div>
             <div>
                 {#if loading}
-                    <div class="animate-spin rounded-full h-7 w-7 border-t-2 border-b-2 border-primary"></div>
+                    <LoadingSpinner size={8} />
                     
                 {:else if edit}
                     <div class="flex justify-between items-center">

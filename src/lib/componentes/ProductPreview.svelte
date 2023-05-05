@@ -3,6 +3,7 @@
     import Check from 'svelte-icons/fa/FaCheck.svelte'
 	import type { Product } from "$lib/types/types";
 	import CartStore from '$lib/stores/CartStore';
+	import LoadingSpinner from './LoadingSpinner.svelte';
 
     export let product: Product;
     
@@ -42,7 +43,7 @@
     </a>
     {#if loading} 
         <div class="absolute bottom-2 right-2 rounded-lg w-10 h-10 p-2 text-green-600 bg-slate-200 dark:bg-slate-600">
-            <div class="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary"></div>
+            <LoadingSpinner size={6} />
         </div>
     {:else}
         {#if $cart.find(item => item.id === product.id) !== undefined}

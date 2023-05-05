@@ -10,6 +10,8 @@ export const actions: Actions = {
     default: async (event) => {
         const auth = new Auth(event);
         await auth.logoutUser();
-        throw redirect(302, '/');
+
+        const search = event.url.searchParams.get('path') || '/';
+        throw redirect(302, `/${search.slice(1)}`);
     }
 };

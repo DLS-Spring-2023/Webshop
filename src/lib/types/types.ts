@@ -13,6 +13,7 @@ export type Product = {
 }
 
 export type CartItem = {
+    eid: string;
     id: number;
     title: string;
     price: number;

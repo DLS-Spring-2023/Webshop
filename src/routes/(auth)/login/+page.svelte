@@ -1,28 +1,46 @@
 <script lang="ts">
     import { page } from '$app/stores';
+    import { fly } from 'svelte/transition';
     import { superForm } from 'sveltekit-superforms/client';
     import type { PageData } from './$types';
 	import FormDebug from '$lib/componentes/FormDebug.svelte';
+	import { onMount } from 'svelte';
+	import LoadingSpinner from '$lib/componentes/LoadingSpinner.svelte';
 
     export let data: PageData;
 
     let isLogin = true;
+    let loading = false;
+    let showMsg = false;
 
     const ref = $page.url.searchParams.get('ref');
+    let msg = '';
+    
+    onMount(() => {
+        msg = atob($page.url.searchParams.get('msg') || '');
+        if (msg) {
+            showMsg = true;
+        }
+    })
+
+    const formOptions = {
+        onSubmit: () => loading = true,
+        onResult: () => loading = false,
+    }
 
     const { 
         form: loginForm, 
         errors: loginErrors, 
         enhance: loginEnhance,
         message: loginMessage
-    } = superForm(data.loginForm);
+    } = superForm(data.loginForm, formOptions);
 
     const { 
         form: registerForm,
         errors: registerErrors,
         enhance: registerEnhance,
         message: registerMessage
-    } = superForm(data.registerForm);
+    } = superForm(data.registerForm, formOptions);
 
     $: form = isLogin ? loginForm : registerForm;
     $: errors = isLogin ? loginErrors : registerErrors;
@@ -37,9 +55,19 @@
     }
 </style>
 
-<FormDebug data={$form}/>
+<!-- <FormDebug data={$form}/> -->
 
-<div class="flex items-center justify-center mt-20">
+<div class="relative flex items-center justify-center mt-20">
+    {#if showMsg} 
+        <div 
+            class="absolute top-0 right-0 mb-4 mr-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-md"
+            transition:fly|local={{ y: 50, delay: 300, duration: 500 }}    
+            
+        >
+            {msg}
+        </div>
+    {/if}
+
     <div class="bg-highlight p-8 rounded-md shadow-md w-full max-w-md">
         <h2 class="text-2xl font-semibold mb-6 text-center text-primary dark:text-yellow-500">{isLogin ? 'Login' : 'Register'}</h2>
         {#if $message}
@@ -53,6 +81,7 @@
                     <label for="name" class="block text-gray-700 dark:text-gray-300 mb-2">Name</label>
                     <input 
                         bind:value={$registerForm.name}
+                        disabled={loading}
                         type="name" id="name" name="name" 
                         required
                     >
@@ -67,6 +96,7 @@
                 <label for="email" class="block text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
                 <input 
                     bind:value={$form.email}
+                    disabled={loading}
                     type="email" id="email" name="email" 
                     required
                 >
@@ -80,6 +110,7 @@
                 <label for="password" class="block text-gray-700 dark:text-gray-300 mb-2">Password</label>
                 <input 
                     bind:value={$form.password}
+                    disabled={loading}
                     type="password" id="password" name="password" 
                     required
                 >
@@ -92,7 +123,13 @@
             {#if !isLogin}
                 <div>
                     <label for="repassword" class="block text-gray-700 dark:text-gray-300 mb-2">Repeat Password</label>
-                    <input type="password" id="repassword" name="repassword" required>
+                    <input 
+                        disabled={loading}
+                        type="password" 
+                        id="repassword" 
+                        name="repassword" 
+                        required
+                    >
                 </div>
                 {#if $registerErrors.repassword}
                     <div class="text-red-500 text-sm mb-4">
@@ -105,8 +142,19 @@
                     <a href="/resetpassword" class="text-sm text-primary dark:text-yellow-500 hover:underline">Forgot Password?</a>
                 {/if}
             </div>
-            <button type="submit" class="w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-md">
-                {isLogin ? 'Login' : 'Register'}
+            <button 
+                type="submit" 
+                disabled={loading}
+                class="w-full py-2 bg-primary hover:bg-opacity-90 text-white rounded-md"
+            >
+                {#if loading}
+                    <div class="w-full flex justify-center">
+                        <div class="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
+                        <!-- <LoadingSpinner size={1.5} color={'white'}/> -->
+                    </div>
+                {:else}
+                    {isLogin ? 'Login' : 'Register'}
+                {/if}
             </button>
 
             <input type="hidden" name="ref" value="{ref}">
@@ -115,6 +163,7 @@
         <div class="w-full flex justify-center">
             <button 
                 on:click={() => isLogin = !isLogin} 
+                disabled={loading}
                 class="block text-center text-sm text-gray-700 dark:text-gray-300 mt-4 hover:underline"
             >
                 {#if isLogin }

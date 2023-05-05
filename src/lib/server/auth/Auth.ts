@@ -57,13 +57,14 @@ class Auth {
         // redirect to login if not logged in and trying to access protected content
         if (!event.cookies.get('access_token') && event.route.id?.startsWith('/(protected)')) {
             const search = event.url.pathname + event.url.search;
-            const buf = Buffer.from(search)
-            const ref = buf.toString('base64');
+            const ref = Buffer.from(search).toString('base64');
                 
             const dec = Buffer.from(ref, 'base64');
             console.log(dec, dec.toString());
             
             throw redirect(302, `/login?ref=${ref}`);
+        } else if (event.cookies.get('access_token') && event.route.id?.startsWith('/(auth)')) {
+            throw redirect(302, '/');
         }
 
         return !!event.cookies.get('access_token')

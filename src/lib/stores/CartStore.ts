@@ -24,6 +24,7 @@ class CartStore {
         
             if (index === -1) {
                 cart.push({ 
+                    eid: product.eid,
                     id: product.id, 
                     title: product.title, 
                     price: product.price,

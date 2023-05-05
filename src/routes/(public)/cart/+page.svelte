@@ -10,11 +10,6 @@
     $: itemTotal = $cart.reduce((total, item) => total + item.price * item.quantity, 0);
     $: shipping = itemTotal === 0 ? 0 : itemTotal > 999 ? 0 : 13.99;
     $: total = itemTotal + shipping;
-
-    const checkout = () => {
-      // Implement the checkout logic here
-      console.log("Proceeding to checkout");
-    };
 </script>
   
 <section class="px-4 py-8 m-8 rounded-lg bg-highlight">
@@ -34,7 +29,7 @@
                         <div class="flex items-center space-x-4">
                             <img src="{item.thumbnail}" alt="{item.title}" class="w-14 h-14 object-cover rounded-md" />
                             <div>
-                                <a href={`/products/${item.id}`} class="text-xl font-semibold text-gray-800 dark:text-gray-100">{item.title}</a>
+                                <a href={`/products/${item.eid}`} class="text-xl font-semibold text-gray-800 dark:text-gray-100">{item.title}</a>
                                 <div class="flex items-center">
                                     <p class="text-gray-600 dark:text-gray-400">Quantity: {item.quantity}</p>
                                     <!-- increase and decrease buttons -->
@@ -87,13 +82,14 @@
         </div>
     </div>
     <div class="flex justify-end">
-        <button
-            class="bg-primary dark:bg-yellow-500 hover:bg-opacity-90 text-white py-2 px-4 rounded-md mt-4 disabled:bg-gray-400 disabled:dark:bg-gray-400"
-            disabled={$cart.length === 0}
-            on:click={checkout}
-        >
-            Checkout
-        </button>
+        {#if $cart.length > 0}
+            <a
+                href="/checkout"
+                class="bg-primary dark:bg-yellow-500 hover:bg-opacity-90 text-white py-2 px-4 rounded-md mt-4 disabled:bg-gray-400 disabled:dark:bg-gray-400"
+            >
+                Checkout
+            </a>
+        {/if}
     </div>
 
 </section>
