@@ -2,8 +2,13 @@ import Auth from '$lib/server/auth/Auth';
 import type { Handle, RequestEvent } from '@sveltejs/kit';
 
 export const handle = (async ({ event, resolve }) => {
-   
-    event.locals.authenticated = await Auth.verifyUser(event);
+    
+    if (!event.route.id?.startsWith('/(api)')) {
+        const verified = await Auth.verifyUser(event);
+        event.locals.authenticated = verified.authenticated;
+        event.locals.user_id = verified.user_id;
+    }
+    
     event.locals.theme = getTheme(event);
 
     return resolve(event, {

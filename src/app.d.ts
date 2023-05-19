@@ -5,6 +5,7 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			authenticated: boolean;
+			user_id?: string;
 			theme: string | undefined;
 		}
 		// interface PageData {}

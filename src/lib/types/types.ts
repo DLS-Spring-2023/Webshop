@@ -28,3 +28,27 @@ export type Account = {
     address: string;
     phone: string;
 }
+
+export type ShippingAddress = {
+    firstName: string;
+    lastName: string;
+    address1: string;
+    address2: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+};
+
+export type DeliveryMethod = {
+    id: string;
+    name: string;
+    description: string;
+    cost: number;
+  };
+
+export type CardDetails = {
+    cardNumber: string;
+    expiryDate: string;
+    cvv: string;
+};

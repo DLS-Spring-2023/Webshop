@@ -86,6 +86,11 @@ class CartStore {
             return cart;
         });
     }
+
+    clear() {
+        this.cart.set([]);
+        sessionStorage.setItem('cart', JSON.stringify([]));
+    }
 }
 
 export default new CartStore();

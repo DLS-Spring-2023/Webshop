@@ -73,10 +73,6 @@ export const actions: Actions = {
                 }
             }
         });
-
-        console.log(result);
-        
-
         
         const data = result.hits.hits.map((hit) => ({ ...hit._source as Product, eid: hit._id }));
 

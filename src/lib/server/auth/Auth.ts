@@ -22,17 +22,17 @@ class Auth {
 
     private static async getPublicKey() {
         if (this.PUBLIC_KEY) return this.PUBLIC_KEY;
-
+        
         const apiCall = new Fetch();
         const response = await apiCall.GET('/keys/project/' + AUTH_PROJECT_ID);
         if (!response.error) {
             this.PUBLIC_KEY = response.data?.publicKey;
         }
-
+        
         return this.PUBLIC_KEY;
     }
 
-    static async verifyUser(event: RequestEvent): Promise<boolean> {
+    static async verifyUser(event: RequestEvent): Promise<{ authenticated: boolean, user_id?: string }> {
         const accessToken = event.cookies.get('access_token');
         const refreshToken = event.cookies.get('refresh_token');
 
@@ -43,10 +43,24 @@ class Auth {
         }
 
         // Verify access token
-        let verified;
+        let verified: { sub: string } | null = null;
         if (accessToken) {
             const publicKey = await this.getPublicKey();
-            if (publicKey) verified = await Jwt.verify(accessToken, publicKey);
+            
+            if (publicKey) {
+                verified = await new Promise((resolve) => {
+                    Jwt.verify(accessToken, publicKey, (err, decoded) => {
+                        if (err) {
+                            console.log(err);
+                            return resolve(null);        
+                        } else {
+                            // console.log(decoded);
+                            
+                            return resolve(decoded as { sub: string });
+                        }
+                    });
+                });
+            }
         }
 
         if (!verified) {
@@ -60,14 +74,16 @@ class Auth {
             const ref = Buffer.from(search).toString('base64');
                 
             const dec = Buffer.from(ref, 'base64');
-            console.log(dec, dec.toString());
             
             throw redirect(302, `/login?ref=${ref}`);
         } else if (event.cookies.get('access_token') && event.route.id?.startsWith('/(auth)')) {
             throw redirect(302, '/');
         }
 
-        return !!event.cookies.get('access_token')
+        return {
+            authenticated: !!event.cookies.get('access_token'),
+            user_id: verified?.sub as string
+        }
     }
 
     async loginUser(email: string, password: string): Promise<LoginResponse> {
